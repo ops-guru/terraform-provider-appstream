@@ -1,2 +1,11 @@
 # terraform-provider-appstream
-AWS Appstream2.0 terraform provider
+Terraform appstream provider
+
+# Provider usage
+
+```
+$ go build -o terraform-provider-appstream
+$ terraform init
+$ terraform plan
+$ terraform apply
+```
