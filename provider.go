@@ -2,24 +2,24 @@ package main
 
 import (
 	"log"
-    	"github.com/hashicorp/terraform/helper/schema"
+
 	"github.com/aws/aws-sdk-go/aws"
-    	"github.com/aws/aws-sdk-go/aws/credentials"
-    	"github.com/aws/aws-sdk-go/aws/session"
-    	"github.com/aws/aws-sdk-go/service/appstream"
+	"github.com/aws/aws-sdk-go/aws/credentials"
+	"github.com/aws/aws-sdk-go/aws/session"
+	"github.com/aws/aws-sdk-go/service/appstream"
+	"github.com/hashicorp/terraform/helper/schema"
 )
 
 type Config struct {
-	AccessKey       string
-    	SecretKey       string
-    	Token           string
-    	Region          string
+	AccessKey string
+	SecretKey string
+	Token     string
+	Region    string
 }
 
-type AwsClient struct{
-	appstream	*appstream.AppStream
+type AwsClient struct {
+	appstream *appstream.AppStream
 }
-
 
 func Provider() *schema.Provider {
 	return &schema.Provider{
@@ -46,7 +46,7 @@ func Provider() *schema.Provider {
 				Description: "Security token",
 			},
 
-            		"region": {
+			"region": {
 				Type:     schema.TypeString,
 				Required: true,
 				DefaultFunc: schema.MultiEnvDefaultFunc([]string{
@@ -59,9 +59,9 @@ func Provider() *schema.Provider {
 		},
 
 		ResourcesMap: map[string]*schema.Resource{
-		    "appstream_stack":  resourceAppstreamStack(),
-		    "appstream_image_builder":  resourceAppstreamImageBuilder(),
-		    "appstream_fleet":  resourceAppstreamFleet(),
+			"appstream_stack":         resourceAppstreamStack(),
+			"appstream_image_builder": resourceAppstreamImageBuilder(),
+			"appstream_fleet":         resourceAppstreamFleet(),
 		},
 
 		ConfigureFunc: providerConfigure,
@@ -70,18 +70,18 @@ func Provider() *schema.Provider {
 
 func providerConfigure(d *schema.ResourceData) (interface{}, error) {
 	c := Config{
-        	AccessKey:  d.Get("access_key").(string),
-        	SecretKey:  d.Get("secret_key").(string),
-		Token:      d.Get("token").(string),
-		Region:     d.Get("region").(string),
+		AccessKey: d.Get("access_key").(string),
+		SecretKey: d.Get("secret_key").(string),
+		Token:     d.Get("token").(string),
+		Region:    d.Get("region").(string),
 	}
 
 	var client AwsClient
 
 	sess, err := session.NewSession(&aws.Config{
-        	Region:      aws.String(c.Region),
-        	Credentials: credentials.NewStaticCredentials(c.AccessKey, c.SecretKey, c.Token),
-    	})
+		Region:      aws.String(c.Region),
+		Credentials: credentials.NewStaticCredentials(c.AccessKey, c.SecretKey, c.Token),
+	})
 	if err != nil {
 		log.Printf("[ERROR] Error creating session: %s", err)
 		return nil, err
